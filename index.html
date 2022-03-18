@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="referrer" content="no-referrer"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bilibili Fans.</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    @font-face {
+      font-family: 'number';
+      src:url('clock-number.ttf');
+    }
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      background-color: #26323B;
+      background-color: black;
+      font-family: 'number';
+      font-size: 16vw;
+      color: #CCCCCE;
+    }
+    #main {
+      display: flex;
+      height: 100vh;
+      max-width: 200vh;
+      margin: 0 auto;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      flex-wrap: wrap;
+    }
+    #main > * {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    #logo {
+      width: 100vw;
+      flex-wrap: wrap;
+    }
+    #logo > img {
+      height: 20vmin;
+    }
+    #logo > #sep {
+      padding: 0 8vmin;
+    }
+    #logo > #avatar {
+      border-radius: 50%;
+    }
+    #fans {
+      line-height: 1em;
+      color: #CCCCCE;
+      margin-top: 8vmin;
+    }
+    #script {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <div id="logo">
+      <img src="bilibili.png" alt="">
+      <div id="sep">×</div>
+      <img id="avatar" alt="">
+    </div>
+    <div id="fans"></div>
+    <div id="script"></div>
+  </div>
+  <script>
+    // 初始化元素常量
+    const elAvatar = document.getElementById('avatar')
+    const elFans = document.getElementById('fans')
+    const elScript = document.getElementById('script')
+    const elSep = document.getElementById('sep')
+    // 获取用户 id
+    var userID = window.location.hash.replace(/^#/, '')
+    if(userID.length){
+      localStorage.setItem('userID', userID)
+    }else if(localStorage.getItem('userID')){
+      userID = localStorage.getItem('userID')
+    }
+    // 显示头像和粉丝数
+    const showFansCount = function(){
+      console.log(data)
+      elFans.innerHTML= data.follower
+      elAvatar.src = data.face
+    }
+    var elScriptChild
+    const appendScript = function(){
+      const url = "/data.js?u="+userID+'&spam='+Number(new Date)
+      elScriptChild = document.createElement('script')
+      elScriptChild.setAttribute('src', url)
+      elScript.appendChild(elScriptChild)
+    }
+    appendScript()
+    // 重复数据获取操作
+    const getData = function(){
+      elScript.removeChild(elScriptChild)
+      appendScript()
+    }
+    // 页面元素定位
+    const resize = function(){
+      elFans.style.fontSize = document.getElementById('main').clientWidth*0.22+'px'
+      if(window.innerHeight > window.innerWidth){
+        elSep.style.padding = '5vh 50%'
+      }else{
+        elSep.style.padding = '0 8vmin'
+      }
+    }
+    resize()
+    window.onresize = resize
+
+    window.addEventListener('message', function(e) {
+      if(e.data === 'refresh') {
+        getData()
+      }
+    }, false);
+    const duration = 60; /* 1s */
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = 'data:text/html,%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%3Chead%3E%0A%09%3Cmeta%20charset%3D%22utf-8%22%20%2F%3E%0A%09%3Cmeta%20http-equiv%3D%22refresh%22%20content%3D%22'+ duration +'%22%20id%3D%22metarefresh%22%20%2F%3E%0A%09%3Ctitle%3Ex%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%09%3Cscript%3Etop.postMessage%28%27refresh%27%2C%20%27%2A%27%29%3B%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E';
+    document.body.insertBefore(iframe, document.body.childNodes[0]);
+  </script>
+</body>
+</html>

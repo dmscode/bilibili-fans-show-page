@@ -1,0 +1,7 @@
+{
+  "name": "Bilibili Fans",
+  "short_name": "Bilibili Fans",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}
